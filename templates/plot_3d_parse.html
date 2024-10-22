@@ -5,17 +5,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>3D Plot</title>
     <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+    <link rel="stylesheet" href="static/site.css">
     <style>
-        body, html {
-            margin: 0;
-            padding: 0;
-            height: 100%;
-            font-family: Arial, sans-serif;
-        }
-        .container {
-            display: flex;
-            height: 100%;
-        }
         .controls {
             width: 300px;
             padding: 20px;
@@ -54,8 +45,21 @@
     </style>
 </head>
 <body>
+<nav class="top-nav">
+    <ul>
+        <li><a href="/">Home</a></li>
+        <li>
+            <a href="#">Apps</a>
+            <ul class="dropdown">
+              <li><a href="/3dplot_parse">Graf</a></li>
+            </ul>
+        </li>
+        <li><a href="#">About</a></li>
+        <li><a href="#">Contact</a></li>
+    </ul>
+</nav>
 <div class="container">
-  <div class="controls">
+  <aside class="sidebar">
     <h2>Graf</h2>
     <form method="POST">
         <label for="name">f(x, y) = </label>
@@ -66,13 +70,17 @@
         <input type="color" id="hicolor" name="hicolor" value="{{ hicolor }}">
         <input type="submit" value="Submit">
     </form>
-  </div>
-  <div class="plot" id="plot">
-      <script>
-        var plotData = JSON.parse({{ plot_json | tojson | safe }});
-        Plotly.newPlot('plot', plotData.data, plotData.layout);
-      </script>
-  </div>
+  </aside>
+  <main class="main-content">
+      <div class="plot" id="plot">
+        {{ errormsg }}
+        <script>
+          var plotData = JSON.parse({{ plot_json | tojson | safe }});
+          Plotly.newPlot('plot', plotData.data, plotData.layout);
+        </script>
+      </div>
+  </main>
 </div>
+
 </body>
 </html>
