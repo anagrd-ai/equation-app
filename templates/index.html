@@ -8,29 +8,19 @@
     <title>Optic Blu</title>
 </head>
 <body>
-    <nav class="top-nav">
-        <ul>
-            <li><a href="#">Home</a></li>
-            <li>
-                <a href="#">Apps</a>
-                <ul class="dropdown">
-                    <li><a href="/3dplot_parse">Graf</a></li>
-                </ul>
-            </li>
-            <li><a href="#">About</a></li>
-            <li><a href="#">Contact</a></li>
-        </ul>
-    </nav>
-    <div class="container">
-        <aside class="sidebar">
-            <h2>Welcome</h2>
-        </aside>
-        <main class="main-content">
-            <h1>Welcome to Optic Blu</h1>
-            <p>Select an application from above.
-            </p>
-        </main>
+<div class="outer">
+{% include 'navbar.html' %}
+<div class="container">
+    <div class="sidebar">
+        <h2>Welcome</h2>
     </div>
+    <main class="main-content">
+        <h1>Welcome to Optic Blu</h1>
+        <p>Select an application from above.
+        </p>
+    </main>
+</div>
+</div>
 </body>
 </html>
 

@@ -15,7 +15,7 @@
         }
         .plot {
             flex-grow: 1;
-            padding: 20px;
+            padding: 0px;
             display: flex;
             justify-content: center;
             align-items: center;
@@ -45,28 +45,17 @@
     </style>
 </head>
 <body>
-<nav class="top-nav">
-    <ul>
-        <li><a href="/">Home</a></li>
-        <li>
-            <a href="#">Apps</a>
-            <ul class="dropdown">
-              <li><a href="/3dplot_parse">Graf</a></li>
-            </ul>
-        </li>
-        <li><a href="#">About</a></li>
-        <li><a href="#">Contact</a></li>
-    </ul>
-</nav>
+<div class="outer">
+{% include 'navbar.html' %}
 <div class="container">
   <aside class="sidebar">
     <h2>Graf</h2>
     <form method="POST">
         <label for="name">f(x, y) = </label>
         <input type="text" id="eq" name="eq" value="{{ eq }}" required><br><br>
-        <label for="locolor">Low Color:</label>
+        <label for="locolor">Min Color:</label>
         <input type="color" id="locolor" name="locolor" value="{{ locolor }}">
-        <label for="hicolor">High Color:</label>
+        <label for="hicolor">Max Color:</label>
         <input type="color" id="hicolor" name="hicolor" value="{{ hicolor }}">
         <input type="submit" value="Submit">
     </form>
@@ -80,6 +69,7 @@
         </script>
       </div>
   </main>
+</div>
 </div>
 
 </body>
