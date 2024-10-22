@@ -1,0 +1,77 @@
+        body, html {
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            height: 100%;
+        }
+        .container {
+            display: flex;
+            height: 100%;
+        }
+        .sidebar {
+            width: 250px;
+            background-color: #1a2f23;
+            color: white;
+            padding: 20px;
+        }
+        .main-content {
+            flex-grow: 1;
+            background-color: white;
+            padding: 20px;
+        }
+        .top-nav {
+            background-color: #2c4c3b;
+            padding: 10px 0;
+        }
+        .top-nav ul {
+            list-style-type: none;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: flex-start;
+        }
+        .top-nav li {
+            position: relative;
+            margin-right: 20px;
+        }
+        .top-nav a {
+            color: white;
+            text-decoration: none;
+            padding: 10px;
+            display: block;
+        }
+        .top-nav li:hover > ul {
+            display: block;
+        }
+        .dropdown {
+            display: none;
+            position: absolute;
+            background-color: #2c4c3b;
+            min-width: 150px;
+            box-shadow: 0 8px 16px rgba(0,0,0,0.2);
+            z-index: 1;
+        }
+        .dropdown li {
+            margin: 0;
+        }
+        .dropdown a {
+            padding: 10px;
+        }
+        .dropdown a:hover {
+            background-color: #1a2f23;
+        }
+        h1, h2 {
+            color: #2c4c3b;
+        }
+        .control {
+            margin-bottom: 15px;
+        }
+        .control label {
+            display: block;
+            margin-bottom: 5px;
+        }
+        .control input, .control select {
+            width: 100%;
+            padding: 5px;
+            box-sizing: border-box;
+        }
