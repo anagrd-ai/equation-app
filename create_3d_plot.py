@@ -2,6 +2,7 @@ import numpy as np
 import plotly.graph_objects as go
 from plotly.utils import PlotlyJSONEncoder
 from typing import List
+from plot_util import create_colorscale
 import json
 import equation_parser_ast
 
@@ -29,29 +30,6 @@ def create_3d_plot(f, x_range, y_range, num_points=50):
 
     return json.dumps(fig, cls=PlotlyJSONEncoder)
 
-def evaluate_equation_meshgrid(tokens, X, Y):
-    parser = equation_parser_ast.EquationParser()
-    Z = []
-    for y in Y:
-        row = []
-        for x in X:
-            row.append(float(parser.evaluate(tokens, x, y)))
-        Z.append(row)
-    return Z
-
-def hex_to_rgb(hex_color: str):
-    # Remove the '#' if present
-    hex_color = hex_color.lstrip('#')
-    # Convert hex to decimal
-    red = int(hex_color[:2], 16)
-    green = int(hex_color[2:4], 16)
-    blue = int(hex_color[4:], 16)
-    # Return the RGB string
-    return f"rgb({red}, {green}, {blue})"
-
-def create_colorscale(locolor: str, hicolor:str):
-    return [[0, hex_to_rgb(locolor)], [1, hex_to_rgb(hicolor)]]
-
 def create_3d_plot_parser(
     tokens, x_range, y_range, equation, num_points=50, locolor="#000080", hicolor="#00FF00"):
     """
@@ -68,7 +46,7 @@ def create_3d_plot_parser(
     X, Y = np.meshgrid(x, y)
     # print("X = ", X, "\n\n")
     # print("Y = ", Y, "\n\n")
-    Z = evaluate_equation_meshgrid(tokens, x, y)
+    Z = equation_parser_ast.evaluate_equation_meshgrid(tokens, x, y)
 
     # print("Z = ", Z, "\n\n")
 

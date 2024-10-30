@@ -24,14 +24,21 @@ class EquationParser:
         }
 
         self.functions = {
-            'sin': math.sin,
             'cos': math.cos,
+            'sin': math.sin,
             'tan': math.tan,
+            'acos': math.acos,
+            'asin': math.asin,
+            'atan': math.atan,
+            'cosh': math.cosh,
+            'sinh': math.sinh,
+            'tanh': math.tanh,
             'exp': math.exp,
             'log': math.log,
             'abs': math.fabs,
             'fabs': math.fabs,
-            'sqrt': math.sqrt
+            'sqrt': math.sqrt,
+            'trunc': math.trunc,
         }
 
     def parse_equation(self, equation_string):
@@ -88,6 +95,16 @@ class EquationParser:
             return func(*args)
         else:
             raise ValueError(f"Unsupported node type: {node_type}")
+
+def evaluate_equation_meshgrid(tokens, X: list[float], Y: list[float]) -> list[list[float]]:
+    parser = EquationParser()
+    Z = []
+    for y in Y:
+        row = []
+        for x in X:
+            row.append(float(parser.evaluate(tokens, x, y)))
+        Z.append(row)
+    return Z
 
 
 # Test the functions
