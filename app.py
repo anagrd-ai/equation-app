@@ -1,10 +1,16 @@
 from flask import Flask, render_template, request, redirect, url_for
+import logging
 import create_3d_plot
-import equation_parser
+import nn_equation_plot
+import equation_parser_ast
 
 app = Flask(__name__)
 
-@app.route('/', methods=['GET', 'POST'])
+@app.route('/')
+def mainpage():
+    return render_template('index.html')
+
+@app.route('/form', methods=['GET', 'POST'])
 def form():
     if request.method == 'POST':
         # Process form data
@@ -34,13 +40,87 @@ def threed_plot():
     plot_json = create_3d_plot.create_3d_plot(create_3d_plot.example_function, (-6, 6), (-6, 6))
     return render_template('plot_3d.html', plot_json=plot_json)
 
-@app.route('/3dplot_parse')
+@app.route('/navbar')
+def navbar_template():
+    return render_template('test_navbar.html')
+
+@app.route('/3dplot_parse', methods=['GET', 'POST'])
 def threed_plot_parse():
-    eq = "sin(x^2 + y^2)"
-    tokens = equation_parser.tokenize_equation(eq)
-    plot_json = create_3d_plot.create_3d_plot_parser(tokens, (-3, 3), (-3, 3), eq, num_points=40)
-    return render_template('plot_3d.html', plot_json=plot_json)
+    eq = request.args.get('eq')
+    if not eq:
+        eq = "sin(x**2 + y**2)"
+    locolor = request.args.get('locolor')
+    hicolor = request.args.get('hicolor')
+    if not locolor:
+        locolor = "#104010"
+    if not hicolor:
+        hicolor = "#C0F000"
+    if request.method == 'POST':
+        eq = request.form.get('eq')
+        locolor = request.form.get('locolor')
+        hicolor = request.form.get('hicolor')
+        return redirect(url_for('threed_plot_parse', eq=eq, locolor=locolor, hicolor=hicolor))
+
+    parser = equation_parser_ast.EquationParser()
+    plot_json = []
+    errormsg = ""
+    try:
+        tokens = parser.tokenize(eq)
+        plot_json = create_3d_plot.create_3d_plot_parser(
+            tokens, (-3, 3), (-3, 3), eq, num_points=4, locolor=locolor, hicolor=hicolor)
+    except ValueError as e:
+        errormsg = "Error: " + str(e)
+        plot_json = []
+    except KeyError as e:
+        errormsg = "Error: " + str(e)
+        plot_json = []
+
+    return render_template(
+        'plot_3d_parse.html', plot_json=plot_json, eq=eq, locolor=locolor, hicolor=hicolor,
+        errormsg=errormsg)
+
+@app.route('/nn_solve', methods=['GET', 'POST'])
+def nn_solve():
+    eq = request.args.get('eq')
+    if not eq:
+        eq = "sin(x**2 + y**2)"
+    locolor = request.args.get('locolor')
+    hicolor = request.args.get('hicolor')
+    if not locolor:
+        locolor = "#104010"
+    if not hicolor:
+        hicolor = "#C0F000"
+    if request.method == 'POST':
+        eq = request.form.get('eq')
+        locolor = request.form.get('locolor')
+        hicolor = request.form.get('hicolor')
+        return redirect(url_for('nn_solve', eq=eq, locolor=locolor, hicolor=hicolor))
+
+    parser = equation_parser_ast.EquationParser()
+    plot_json = []
+    errormsg = ""
+    try:
+        tokens = parser.tokenize(eq)
+        plot_json = nn_equation_plot.create_3d_plot(
+            tokens, eq, (-3, 3), (-3, 3), num_points=10, locolor=locolor, hicolor=hicolor)
+    except ValueError as e:
+        errormsg = "Error: " + str(e)
+        plot_json = []
+    except KeyError as e:
+        errormsg = "Error: " + str(e)
+        plot_json = []
+
+    return render_template(
+        'nn_solve.html', plot_json=plot_json, eq=eq, locolor=locolor, hicolor=hicolor,
+        errormsg=errormsg)
 
 
 if __name__ == '__main__':
+    app.logger.setLevel(logging.DEBUG)
+
+    # Create a file handler to log to a file (optional)
+    handler = logging.FileHandler('flask_app.log')
+    handler.setLevel(logging.DEBUG)
+    app.logger.addHandler(handler)
+
     app.run(debug=True)

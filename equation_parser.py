@@ -1,17 +1,29 @@
 import numpy as np
 import re
 
+def convert_to_floats(string_list: list[str]) -> list[str]:
+    result = []
+    for item in string_list:
+        try:
+            result.append(float(item))
+        except ValueError:
+            result.append(item)
+    return result
+
 def tokenize_equation(equation):
     # Define regex pattern for operators, functions, variables, and numbers
-    pattern = r'(\+|-|\*|/|\^|\(|\)|sin|cos|tan|sqrt|x|y|\d+(\.\d*)?)'
-    tokens = re.findall(pattern, equation)
-    return [token[0] for token in tokens]
+    pattern = r'(\+|-|\*|/|\^|\(|\)|sin|cos|tan|sqrt|x|y|r|(\d+\.\d+)|(\.\d+)|(\d+\.)|(\d+))'
+    raw_tokens = re.findall(pattern, equation)
+    tokens = [token[0] for token in raw_tokens]
+    return convert_to_floats(tokens)
 
 def evaluate_equation(tokens, x, y):
     # Define operator precedence
     precedence = {'+': 1, '-': 1, '*': 2, '/': 2, '^': 3}
     
     def apply_operator(operators, values):
+        assert len(operators) > 0, f"Missing operator, {values=}"
+        assert len(values) > 1, f"Missing values, {operators=}, {values=}"
         operator = operators.pop()
         right = values.pop()
         left = values.pop()
@@ -41,12 +53,14 @@ def evaluate_equation(tokens, x, y):
     values = []
     
     for token in tokens:
-        if token == 'x':
+        if isinstance(token, float):
+            values.append(token)
+        elif token == 'x':
             values.append(x)
         elif token == 'y':
             values.append(y)
-        elif token.isdigit() or (token[0] == '-' and token[1:].isdigit()):
-            values.append(float(token))
+        elif token == 'r':
+            values.append(np.sqrt(y*y + x*x))
         elif token in ('sin', 'cos', 'tan', 'sqrt'):
             operators.append(token)
         elif token == '(':
@@ -73,12 +87,13 @@ def evaluate_equation(tokens, x, y):
 
 def test_equation_parser():
 	# Example usage
-	equation = "cos(x + y) * sqrt(x^2 + y^2)"
+	# equation = "sqrt(x^2.2 + y ^ .2 + r^ 2.)"
+	equation = "y^2.2 + x^.2 + r^-2."
 	tokens = tokenize_equation(equation)
 	print("Tokenized equation:", tokens)
 
 	# Test with scalar values
-	x, y = 1.0, 2.0
+	x, y = 2.0, 3.0
 	result = evaluate_equation(tokens, x, y)
 	print(f"Result for x={x}, y={y}: {result}")
 

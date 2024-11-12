@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>3D Plot</title>
+    <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+    <link rel="stylesheet" href="static/site.css">
+    <style>
+        .controls {
+            width: 300px;
+            padding: 20px;
+            background-color: #f0f0f0;
+            box-shadow: 2px 0 5px rgba(0,0,0,0.1);
+        }
+        .plot {
+            flex-grow: 1;
+            padding: 0px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        form {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+        label {
+            font-weight: bold;
+        }
+        input, select {
+            width: 100%;
+            padding: 5px;
+        }
+        button {
+            padding: 10px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #45a049;
+        }
+    </style>
+</head>
+<body>
+<div class="outer">
+{% include 'navbar.html' %}
+<div class="container">
+  <aside class="sidebar">
+    <h2>Graf</h2>
+    <form method="POST">
+        <label for="name">f(x, y) = </label>
+        <input type="text" id="eq" name="eq" value="{{ eq }}" required><br><br>
+        <label for="locolor">Min Color:</label>
+        <input type="color" id="locolor" name="locolor" value="{{ locolor }}">
+        <label for="hicolor">Max Color:</label>
+        <input type="color" id="hicolor" name="hicolor" value="{{ hicolor }}">
+        <input type="submit" value="Submit">
+    </form>
+  </aside>
+  <main class="main-content">
+      <div class="plot" id="plot">
+        {{ errormsg }}
+        <script>
+          var plotData = JSON.parse({{ plot_json | tojson | safe }});
+          Plotly.newPlot('plot', plotData.data, plotData.layout);
+        </script>
+      </div>
+  </main>
+</div>
+</div>
+
+</body>
+</html>
